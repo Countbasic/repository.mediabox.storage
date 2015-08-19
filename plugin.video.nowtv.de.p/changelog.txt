@@ -1,3 +1,7 @@
+1.0.14
+- Fix Zwei damit alles wieder geht
+1.0.13 
+- Berlin Tag und Nach Funktioniert jetzt
 1.0.12 (18.08.2015)
 FIX skatulskijean Found out how to get RTL working again Without RTMPdump
 FIX Reverted to Orignal SOurce+ Patch

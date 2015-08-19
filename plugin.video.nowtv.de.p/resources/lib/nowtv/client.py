@@ -297,7 +297,7 @@ class Client(object):
     def get_format_tabs(self, channel_config, seo_url):
         # first get the correct id for the format
         params = {
-            'fields': '*,.*,formatTabs.*,formatTabs.formatTabPages.*',
+            'fields': '*,.*,formatTabs.*',
             'name': '%s.php' % seo_url
         }
         json_data = self._perform_request(channel_config, params=params, path='formats/seo')
