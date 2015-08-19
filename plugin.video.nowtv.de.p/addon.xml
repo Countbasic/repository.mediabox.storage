@@ -18,6 +18,6 @@
                 <forum></forum>
                 <website>http://nowtv.de</website>
 		<email> andreas at vogler dot name</email>
-                <source>http://repo.l0re.com/data/plugin.video.nowtv.de.p/</source>
+                <source>https://github.com/Countbasic/repository.mediabox.storage/tree/master/plugin.video.nowtv.de.p</source>
         </extension>
 </addon>
