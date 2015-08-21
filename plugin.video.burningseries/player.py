@@ -9,9 +9,7 @@ class bsPlayer(xbmc.Player):
 	def playStream(self, url, n, season, episode):
 		print "[bs][player.py] playStream"
 		self.play(url)
-		print type(n),n
 		name = n.decode('utf-8')
-		print type(name),name
 		done = False
 		if readWatchedData(name.encode('utf-8')+"/"+season+"/"+episode):
 			done = True

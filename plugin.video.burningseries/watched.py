@@ -20,16 +20,16 @@ def writeWatchedData(n):
 	
 def readWatchedData(n):
 	global watchedFile
-	name = n.decode('utf-8')
+	name = n.decode('utf-8').encode('utf-8')
 	f = xbmcvfs.File(watchedFile)
 	b = f.read()
 	f.close()
 	watchedData = b.splitlines()
 	for m in watchedData:
 		if name == m:
-			print "[bs][readWatchedData] found "+name.encode('utf-8')+" in watched.data"
+			print "[bs][readWatchedData] found "+name+" in watched.data"
 			return True
-	print "[bs][readWatchedData] "+name.encode('utf-8')+" not found in watched.data"
+	print "[bs][readWatchedData] "+name+" not found in watched.data"
 	return False
 
 def changeToWatched(watchedString):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import xbmc, xbmcgui, xbmcplugin, xbmcaddon, xbmcvfs
-import sys, random, json
+import sys, os, random, json, zlib
 import urllib, urllib2, cookielib
 import re, base64
 from watched import *
@@ -67,7 +67,7 @@ def showContent(sortType):
 		for d,dv in jsonContent.iteritems():
 			if sortType[0] == "G":
 				for ks in dv['series']:
-					#print d
+					#print ks['name'].encode('utf-8')
 					serie = [d+" : [B]"+ks['name'].strip()+"[/B]",ks['name'],ks['id']]
 					lKey = d
 					if lKey in seriesList:
@@ -86,11 +86,12 @@ def showContent(sortType):
 			skey = key
 			if key =="0":
 				skey = "0-9 etc"
-			addDirectoryItem("[B]"+skey+"[/B] (%d)" % len(seriesList[key]), {"kindOf":0, "sortType": sortType+key},picture)
+			addDirectoryItem("[B]"+skey.encode('utf-8')+"[/B] (%d)" % len(seriesList[key]), {"kindOf":0, "sortType": sortType+key.encode('utf-8')},picture)
 	else:
 		# -- show subset for A or G --
 		# -- example AD shows all series with D
 		# -- example GAnimation shows all Series in Animation
+		sortType = sortType.decode('utf-8')		
 		sKey = sortType[1:]
 		for s in sorted(seriesList[sKey], key=lambda f:f[0]):
 			seriesName = s[0]
@@ -147,7 +148,7 @@ def showEpisodes(n,id,season):
 				episodeName += " ("+d['english']+")"
 		print episodeName.encode('utf-8')
 		episodeName_watched = episodeName
-		if readWatchedData(name.encode('utf-8')+"/"+str(season)+"/"+str(d['epi'])):
+		if readWatchedData((name+"/"+str(season)+"/"+str(d['epi'])).encode('utf-8')):
 			episodesWatched += 1
 			episodeName_watched = changeToWatched(episodeName)
 		addDirectoryItem(episodeName_watched, {"kindOf": 3, "name":data['series']['series'].encode('utf-8'), "id":id, "season":season, "episode":d['epi'],"episodename":episodeName.encode('utf-8')},cover)
@@ -190,21 +191,24 @@ def showVideo(vid, n,season,episode):
 
 def straightPlay(id,season,episode):
 	global thisPlugin
-	episodeData = getUrl(urlHost+"series/"+str(id)+"/"+str(season)+"/"+str(episode))
+	thisUrl = urlHost+"series/"+str(id)+"/"+str(season)+"/"+str(episode)
+	print "[bs][straightPlay] thisUrl: "+thisUrl
+	episodeData = getUrl(thisUrl)
+	print episodeData
 	episodeJSON = json.loads(episodeData)
-	print episodeJSON
 	series = episodeJSON['series']
 	allHoster = []
 	for d in episodeJSON['links']:
 		hoster = d['hoster']
 		hEntry = {"hoster":hoster,"id":str(d['id'])}
 		if hoster.lower() in hosterList:
-			hEntry['hoster'] = "_"+hEntry['hoster']
+			hEntry['hoster'] = "-"+hEntry['hoster']
 			allHoster.append(hEntry)
 		else:
 			allHoster.append(hEntry)
 	sortedHoster = sorted(allHoster,key=lambda k: k['hoster'])
-	print sortedHoster
+	
+	print "[bs][straightPlay] sortedHoster: ",sortedHoster
 	for sortedH in sortedHoster:	
 		streamData = getUrl(urlHost+"watch/"+str(sortedH['id']))
 		streamJSON = json.loads(streamData)
@@ -226,8 +230,9 @@ def add2Library(n,id):
 	global thisPlugin
 	print "[bs][add2Lib] creating Data for "+n
 	newName = simplifyName(n)
+	print type(newName),newName
 	print serienOrdner
-	folder = serienOrdner+"/"+newName
+	folder = os.path.join(serienOrdner,newName)
 	print "[bs][add2Lib] Folder "+folder
 	season = 0
 	while True:
@@ -248,7 +253,8 @@ def add2Library(n,id):
 				try:
 					parameters = {"kindOf": "straightPlay", "id":id, "season":season, "episode":episode}
 					pluginCall = sys.argv[0] + '?' + urllib.urlencode(parameters)
-					create_strm_file(folder+"/"+newFile,str(pluginCall))
+					strmFile = os.path.join(serienOrdner,newName,newFile)
+					create_strm_file(strmFile,str(pluginCall))
 				except Exception:
 					continue
 	print "[bs][add2Lib] ended"
@@ -282,13 +288,15 @@ def simplifyName(s):
 	s = s.replace("ü","ue")
 	s = s.replace("ß","ss")
 	s = s.replace(" ","_")
-	astr = s.encode("ascii",'ignore')
+	astr = s.decode('utf-8').encode("ascii",'ignore')
 	astr = astr.replace("/","_")
 	astr = astr.replace("\\","_")
 	astr = astr.replace(".","_")
 	astr = astr.replace("*","_")
 	astr = astr.replace("?","_")
+	astr = astr.replace(":","_")
 	return astr
+
 # --------------
 # --- helper ---
 # --------------
@@ -307,8 +315,13 @@ def getUrl(url):
 	try:
 		req = urllib2.Request(url)
 		req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+		req.add_header('Accept-encoding', 'gzip')
 		response = urllib2.urlopen(req)
-		return response.read()
+		if response.info().get('Content-Encoding') == 'gzip':
+			d = zlib.decompressobj(16+zlib.MAX_WBITS)
+			return d.decompress(response.read())
+		else:
+			return response.read()
 		response.close()
 	except:
 		return False
@@ -388,6 +401,7 @@ if not params.has_key('kindOf'):	# -- init start --
 	sortType = "A"
 
 if kindOf=="0":						# -- show Series --
+	sortType = urllib.unquote(sortType)
 	ok = showContent(sortType)
 if kindOf=="1": 					# -- showSeasons --
 	name = urllib.unquote(name)

@@ -1,3 +1,24 @@
+[B]Version 1.4.8.5[/B]
+- 18.06.2015
+- encoding error for new genre märchen
+
+[B]Version 1.4.8.4[/B]
+- 24.05.2015
+- api json data gzipped - fixed
+
+[B]Version 1.4.8.3[/B]
+- 08.05.2015
+- forgot import os
+
+[B]Version 1.4.8.2[/B]
+- 08.05.2015
+- hostersort in straightPlay
+- os.path.join fix - thx to jin
+
+[B]Version 1.4.8.1[/B]
+- 08.05.2015
+- utf8/ascii bug in add2Lib
+
 [B]Version 1.4.8[/B]
 - 07.05.2015
 - fixed repeated play
