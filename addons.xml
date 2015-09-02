@@ -2,7 +2,7 @@
 <addons>
 <addon id="plugin.video.burningseries"
 	   name="Burning Series"
-	   version="1.4.8.5"
+	   version="1.4.9.9"
 	   provider-name="chmee phreekz">
   <requires>
 	<import addon="script.module.t0mm0.common"/>
