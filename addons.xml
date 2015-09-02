@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
+<addon id="plugin.video.burningseries"
+	   name="Burning Series"
+	   version="1.4.9.9"
+	   provider-name="chmee phreekz">
+  <requires>
+	<import addon="script.module.t0mm0.common"/>
+	<import addon="script.module.urlresolver"/>
+	</requires>
+  <extension point="xbmc.python.pluginsource"
+			 library="default.py">
+    	<provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>burning-seri.es player</summary>
+    <description>series, a lot, generally in german</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
 <addon id="plugin.video.netzkino_de" name="Netzkino.de" version="0.0.2" provider-name="Tristan Fischer (sphere@dersphere.de)">
     <requires>
         <import addon="xbmc.python" version="2.0"/>
