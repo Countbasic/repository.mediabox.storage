@@ -2,18 +2,18 @@
 <addons>
 <addon id="plugin.video.burningseries"
 	   name="Burning Series"
-	   version="1.5.0"
+	   version="1.4.9.9"
 	   provider-name="chmee phreekz">
   <requires>
 	<import addon="script.module.t0mm0.common"/>
 	<import addon="script.module.urlresolver"/>
 	</requires>
   <extension point="xbmc.python.pluginsource"
-			 library="main.py">
+			 library="default.py">
     	<provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary>bs.to player</summary>
+    <summary>burning-seri.es player</summary>
     <description>series, a lot, generally in german</description>
     <platform>all</platform>
   </extension>

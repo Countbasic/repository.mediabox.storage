@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-  <string id="32001">Einstellungen</string>
-  <string id="30101">Hosterlist</string>
-  <string id="30102">Serien Ordner</string>
+  <string id="32001">Thumbnail Config</string>
+  <string id="30101">Thumbnail Caching</string>
+  <string id="30102">(!) delete Cache (!)</string>
 </strings>
