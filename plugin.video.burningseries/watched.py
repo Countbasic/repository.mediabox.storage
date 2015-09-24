@@ -1,37 +1,40 @@
+# -*- coding: utf-8 -*-
 import xbmc, xbmcgui, xbmcplugin, xbmcaddon, xbmcvfs
 
 addonInfo = xbmcaddon.Addon()
 watchedFile = addonInfo.getAddonInfo('path')+"/watched.data"
 
 # since 1.3.0
-def writeWatchedData(url):
+def writeWatchedData(n):
 	global watchedFile
+	name = n.decode('utf-8')
 	f = xbmcvfs.File(watchedFile)
 	d = f.read()
 	f.close()
 	f = xbmcvfs.File(watchedFile, 'w')
-	b = d+url+"\n"
+	b = d+name.encode('utf-8')+"\n"
 	result = f.write(b)
-	print "[bs][writeWatchedData] write "+watchedFile+" -> "+ url
+	print "[bs][writeWatchedData] write "+watchedFile+" -> "+ name.encode('utf-8')
 	f.close()
 	return result
 	
-def readWatchedData(url):
+def readWatchedData(n):
 	global watchedFile
+	name = n.decode('utf-8').encode('utf-8')
 	f = xbmcvfs.File(watchedFile)
 	b = f.read()
 	f.close()
 	watchedData = b.splitlines()
-	for n in watchedData:
-		if url == n:
-			print "[bs][readWatchedData] found "+url+" in watched.data"
+	for m in watchedData:
+		if name == m:
+			print "[bs][readWatchedData] found "+name+" in watched.data"
 			return True
-	print "[bs][readWatchedData] "+url+" not found in watched.data"
+	print "[bs][readWatchedData] "+name+" not found in watched.data"
 	return False
 
 def changeToWatched(watchedString):
 	# -- rewrite listentry
-	return "[I]"+watchedString+"[/I]" + " watched"
+	return "[I]"+watchedString.encode('utf-8')+"[/I] (watched)"
 
 def markParentEntry(urlData):
 	if not readWatchedData(urlData):
