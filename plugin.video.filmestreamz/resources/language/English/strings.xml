@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <string id="32001">general</string>
+  <string id="30101">startyear</string>
+  <string id="30102">endyear</string>
+  <string id="30103">imdb rating</string>
+  <string id="30104">audio language</string>
+  <string id="30105">prefered hoster</string>
+  <string id="30106">watched Color hex AARRGGBB</string>
+</strings>

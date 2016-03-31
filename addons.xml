@@ -38,6 +38,25 @@
   </extension>
 </addon>
 
+<addon id="plugin.video.filmestreamz"
+	   name="filmestreamz"
+	   version="1.1.0"
+	   provider-name="chmee phreekz">
+  <requires>
+	<import addon="script.module.t0mm0.common"/>
+	<import addon="script.module.urlresolver"/>
+	</requires>
+  <extension point="xbmc.python.pluginsource"
+			 library="main.py">
+    	<provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>filmestreamz</summary>
+    <description>movies. german and english.</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
 <addon id="plugin.video.netzkino_de" name="Netzkino.de" version="0.0.2" provider-name="Tristan Fischer (sphere@dersphere.de)">
     <requires>
         <import addon="xbmc.python" version="2.0"/>

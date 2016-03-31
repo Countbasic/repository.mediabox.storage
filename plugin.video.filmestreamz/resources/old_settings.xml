@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <category label="32001">
+		<setting label="30101" type="text" id="start_year" default="2004"/>
+		<setting label="30102" type="text" id="end_year" default="2016"/>
+		<setting label="30103" type="text" id="imdb_rating" default="7"/>
+        <setting label="30104" type="select" id="lang_select" values="all languages|de only|en only" default="all languages"/>
+        <setting type="sep"/>
+		<setting label="30105" type="text" id="pref_hoster" default=""/>
+		<setting type="sep"/>
+		<setting label="30106" id="watchedColor" type="text" default="FF404040"/>
+    </category>
+</settings>
