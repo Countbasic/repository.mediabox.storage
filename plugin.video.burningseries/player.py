@@ -24,7 +24,7 @@ class bsPlayer(xbmc.Player):
 				print "[bs][playStream] marked as watched :"+name.encode('utf-8')+"/"+season+"/"+episode
 				writeWatchedData((name+"/"+season+"/"+episode).encode('utf-8'))
 				done = True
-			xbmc.sleep(1000)
+			xbmc.sleep(2000)
 
 	def onPlayBackStarted(self):
 		print "[bs][bsPlayer] PLAYBACK STARTED"

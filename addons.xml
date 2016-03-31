@@ -2,7 +2,7 @@
 <addons>
 <addon id="plugin.video.burningseries"
 	   name="Burning Series"
-	   version="1.5.0.1"
+	   version="1.5.1.1"
 	   provider-name="chmee phreekz">
   <requires>
 	<import addon="script.module.t0mm0.common"/>
@@ -15,6 +15,25 @@
   <extension point="xbmc.addon.metadata">
     <summary>bs.to player</summary>
     <description>series, a lot, generally in german</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.cineto"
+	   name="cine.to"
+	   version="1.2.0"
+	   provider-name="chmee phreekz">
+  <requires>
+	<import addon="script.module.t0mm0.common"/>
+	<import addon="script.module.urlresolver"/>
+	</requires>
+  <extension point="xbmc.python.pluginsource"
+			 library="main.py">
+    	<provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>cine.to</summary>
+    <description>movies. german and english.</description>
     <platform>all</platform>
   </extension>
 </addon>
@@ -36,28 +55,5 @@
         <description lang="en">Netzkino.de is the first legal and free movie portal in germany</description>
         <description lang="de">Netzkino.de ist das erste und einzige legale + kostenlose Spielfilmportal im deutschsprachigen Raum</description>
     </extension>
-</addon>
-
-<addon id="plugin.video.nowtv.de.p" name="NOW TV PATCH" version="1.0.19" provider-name="L0RE">
-        <requires>
-                <import addon="xbmc.python" version="2.14.0"/>
-        </requires>
-        <extension point="xbmc.python.pluginsource" library="default.py">
-                <provides>video</provides>
-        </extension>
-        <extension point="xbmc.addon.metadata">
-                <summary lang="en">NOW TV media library</summary>
-                <summary lang="de">Mediathek für NOW TV</summary>
-                <description lang="en">With NOW TV many series, shows, documentaries and magazines can be seen from the program of RTL, RTL II, VOX, N-TV, RTL Nitro and Super RTL.</description>
-                <description lang="de">Mit NOW TV können viele Serien, Shows, Dokumentationen und Magazine aus dem Programm von RTL, RTL II, VOX, N-TV, RTL Nitro und Super RTL geschaut werden.</description>
-                <disclaimer lang="en"></disclaimer>
-                <language>de</language>
-                <platform>all</platform>
-                <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
-                <forum></forum>
-                <website>http://nowtv.de</website>
-		<email> andreas at vogler dot name</email>
-                <source>https://github.com/Countbasic/repository.mediabox.storage/tree/master/plugin.video.nowtv.de.p</source>
-        </extension>
 </addon>
 </addons>

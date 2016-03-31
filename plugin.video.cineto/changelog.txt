@@ -1,0 +1,7 @@
+[B]Version 1.0.1[/B]
+- 14.02.2016
+- languages-select done.
+
+[B]Version 1.0.0[/B]
+- 31.01.2016
+- initial version

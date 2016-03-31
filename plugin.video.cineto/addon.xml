@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.burningseries"
-	   name="Burning Series"
-	   version="1.5.1.1"
+<addon id="plugin.video.cineto"
+	   name="cine.to"
+	   version="1.2.0"
 	   provider-name="chmee phreekz">
   <requires>
 	<import addon="script.module.t0mm0.common"/>
@@ -12,8 +12,8 @@
     	<provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary>bs.to player</summary>
-    <description>series, a lot, generally in german</description>
+    <summary>cine.to</summary>
+    <description>movies. german and english.</description>
     <platform>all</platform>
   </extension>
 </addon>

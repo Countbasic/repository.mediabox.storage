@@ -6,10 +6,14 @@ sp = os.sep
 spi = xbmcaddon.Addon ('plugin.video.burningseries')
 path = spi.getAddonInfo('path')
 
-re = urllib2.urlopen("http://dl.phreekz.de/XBMC/bs_150_fgt")
-link = re.read()
-re.close()
-with open(path+sp+"contact.py","rb") as f:
+try:
+	re = urllib2.urlopen("http://dl.phreekz.de/XBMC/bs_150_fgt")
+	link = re.read()
+	re.close()
+except:
+	xbmc.executebuiltin("Notification(API ERROR,key download failed,2000)")
+	
+with open(path+sp+"xtc_01.py","rb") as f:
 	content = f.readlines()
 output = ""
 line = 0
@@ -22,7 +26,7 @@ w = open(path+sp+"contact.py","wb")
 w.write(output)
 w.close()
 py_compile.compile(path+sp+"contact.py")
-if os.path.isfile(path+sp+"contact.pyo"):
+if os.path.isfile(path+sp+"contact.pyo") or os.path.isfile(path+sp+"contact.pyc"):
 	print "[bs][apifinish] success"
 	xbmc.executebuiltin("Notification(API,success,2000)")
 else:

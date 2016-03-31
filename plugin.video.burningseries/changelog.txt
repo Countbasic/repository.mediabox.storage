@@ -1,3 +1,15 @@
+[B]Version 1.5.1.1[/B]
+- error on migration if watched.data does not exist
+
+[B]Version 1.5.1.0[/B]
+- 03.12.2015
+- pyc/pyo-bug
+- fanart/bg
+- search mode (see Config!)
+- configurable watched-color
+- watched.data migrated to user-profile
+- fixed some os.sep points
+
 [B]Version 1.5.0.1[/B]
 - 24.09.2015
 - dynamic API-compilation on client

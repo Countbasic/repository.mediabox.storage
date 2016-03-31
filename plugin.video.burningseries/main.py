@@ -13,12 +13,17 @@ import urlresolver
 # new since 1.3.0
 from player import bsPlayer
 
+SEP = os.sep
 thisPlugin = int(sys.argv[1])
 dialog = xbmcgui.Dialog()
 addonInfo = xbmcaddon.Addon()
 hosterList = xbmcplugin.getSetting(thisPlugin,"hosterlist").lower()
 serienOrdner = xbmcplugin.getSetting(thisPlugin, 'seriespath')
-thumbUrl = addonInfo.getAddonInfo('path')+"/resources/img/"
+thumbUrl = addonInfo.getAddonInfo('path')+SEP+"resources"+SEP+"img"+SEP
+dataUrl = xbmc.translatePath(addonInfo.getAddonInfo('profile'))
+
+# -- check if watched status is in profile-path v1.5.1 --
+checkUserPath()
 
 urlHost = "http://bs.to/api/"
 urlPics = "http://s.bs.to/img/cover/"
@@ -26,6 +31,30 @@ urlPics = "http://s.bs.to/img/cover/"
 # --------------
 # main functions
 # --------------
+def search():
+	global urlPics, thisPlugin
+	print "[bs][search] started"
+	search_entered = ''
+	keyboard = xbmc.Keyboard(search_entered, 'Suche Serie')
+	keyboard.doModal()
+	if keyboard.isConfirmed():
+		search_entered = keyboard.getText().replace(' ','+')  # sometimes you need to replace spaces with + or %20
+		if search_entered == None:
+			addDirectoryItem("! no input !", {"kindOf":"search"})
+		else:
+			# to find any matches and give me the name and id
+			# ^([^\|]*___[^\|]*)\|([0-9]+)$
+			findRe = re.compile(r"^([^\|]*"+search_entered+"[^\|]*)\|([0-9]+)",re.IGNORECASE|re.MULTILINE)
+			f = xbmcvfs.File(dataUrl+SEP+"searchList.data")
+			searchString = f.read().decode('utf-8')
+			f.close()
+			foundList = re.findall(findRe,searchString)
+			for fL in foundList:
+				picture = urlPics+str(fL[1])+'.jpg|encoding=gzip'
+				addDirectoryItem(fL[0].encode('utf-8'), {"kindOf":1, "name": fL[0].encode('utf-8'), "id":fL[1].encode('utf-8'),"doFav":"0"},picture)
+			if len(fL) is 0:
+				addDirectoryItem("! no match !", {"kindOf":"search"})
+	xbmcplugin.endOfDirectory(thisPlugin)
 
 def showContent(sortType):
 	global thisPlugin
@@ -61,7 +90,6 @@ def showContent(sortType):
 			else:
 				seriesList[lKey] = []
 				seriesList[lKey].append(serie)
-			
 	if sortType[0] == "G":
 		# -- sort by genre --
 		jsonContent = json.loads(data)
@@ -79,6 +107,7 @@ def showContent(sortType):
 	
 	if len(sortType)==1:
 		# -- if only A or G show list of series --
+		addDirectoryItem(".search", {"kindOf":"search"})
 		addDirectoryItem(".sort by Alphabet", {"kindOf":0, "sortType": "A"})
 		addDirectoryItem(".sort by Genre", {"kindOf":0, "sortType": "G"})
 		addDirectoryItem("", {"kindOf":0, "sortType": "A"})
@@ -118,6 +147,7 @@ def showSeasons(n, id):
 		season+=1
 		data = json.loads(getUrl("series/"+str(id)+"/"+str(season)))
 		print "[bs][showSeasons] reading seasons"
+		print data
 		if data.has_key('error'):
 			season-=1
 			break
@@ -140,6 +170,7 @@ def showEpisodes(n,id,season):
 	addDirectoryItem("[B]. "+name.encode('utf-8')+" Staffel "+str(season)+"[/B]", {},cover)
 	print "[bs][showEpisodes] started with "+name.encode('utf-8')
 	data = json.loads(getUrl("series/"+str(id)+"/"+str(season)))
+	#print data
 	for d in data['epi']:
 		episodeName = "#"+str(d['epi'])
 		if 'german' in d:
@@ -190,6 +221,10 @@ def showVideo(vid, n,season,episode):
 		addDirectoryItem("ERROR. Video deleted or urlResolver cant handle Host", {"urlV": "/"})
 		xbmcplugin.endOfDirectory(thisPlugin)
 
+# -----------------
+# -- straightPlay -
+# -- --------------
+
 def straightPlay(id,season,episode):
 	global thisPlugin
 	thisUrl = "series/"+str(id)+"/"+str(season)+"/"+str(episode)
@@ -227,6 +262,7 @@ def straightPlay(id,season,episode):
 # --------------------
 # -- add to library -- hints from movieserver.addon - jin - thx
 # --------------------
+
 def add2Library(n,id):
 	global thisPlugin
 	print "[bs][add2Lib] creating Data for "+n
@@ -254,7 +290,8 @@ def add2Library(n,id):
 				try:
 					parameters = {"kindOf": "straightPlay", "id":id, "season":season, "episode":episode}
 					pluginCall = sys.argv[0] + '?' + urllib.urlencode(parameters)
-					strmFile = os.path.join(serienOrdner,newName,newFile)
+					seasonFolder = newName+"_S"+str(season).zfill(2);
+					strmFile = os.path.join(serienOrdner,newName,seasonFolder,newFile)
 					create_strm_file(strmFile,str(pluginCall))
 				except Exception:
 					continue
@@ -302,16 +339,6 @@ def simplifyName(s):
 # --- helper ---
 # --------------
 
-def is_number(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        return False
-
-def baseN(num,b,numerals="0123456789abcdefghijklmnopqrstuvwxyz"):
-	return ((num == 0) and numerals[0]) or (baseN(num // b, b, numerals).lstrip(numerals[0]) + numerals[num % b])
-
 def getUrl(url):
 	try:
 		req = urllib2.Request(urlHost+url)
@@ -330,18 +357,23 @@ def getUrl(url):
 		return False
 
 def addDirectoryItem(name, parameters={},pic=""):
+	global addonInfo
 	iconpic = pic
 	if pic == "":
 		iconpic = "DefaultFolder.png"
 	li = xbmcgui.ListItem(name,iconImage=iconpic, thumbnailImage=pic)
+	li.setProperty('fanart_image', addonInfo.getAddonInfo('fanart'))
+	#li.setInfo()
 	u = sys.argv[0] + '?' + urllib.urlencode(parameters)
 	return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=li, isFolder=True)
 
 def addPlayableItem(name, parameters={},pic=""):
+	global addonInfo
 	iconpic = pic
 	if pic == "":
 		iconpic = "DefaultFolder.png"
 	li = xbmcgui.ListItem(name,iconImage=iconpic, thumbnailImage=pic)
+	li.setProperty('fanart_image', addonInfo.getAddonInfo('fanart'))
 	li.setProperty("IsPlayable","true")
 	u = sys.argv[0] + '?' + urllib.urlencode(parameters)
 	return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=li, isFolder=False)
@@ -357,29 +389,7 @@ def parameters_string_to_dict(parameters):
             if (len(paramSplits)) == 2:
                 paramDict[paramSplits[0]] = paramSplits[1]
     return paramDict
-
-def unescape(text):
-    def fixup(m):
-        text = m.group(0)
-        if text[:2] == "&#":
-            # character reference
-            try:
-                if text[:3] == "&#x":
-                    return unichr(int(text[3:-1], 16))
-                else:
-                    return unichr(int(text[2:-1]))
-            except ValueError:
-                pass
-        else:
-            # named entity
-            try:
-                text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
-            except KeyError:
-                pass
-        return text # leave as is
-    return re.sub("&#?\w+;", fixup, unicode(text, "UTF-8"), re.UNICODE)
 	
-
 # ----------------
 # ----- main -----
 # ----------------
@@ -439,3 +449,6 @@ if kindOf == "straightPlay":
 	season = urllib.unquote(season)
 	episode = urllib.unquote(episode)
 	ok = straightPlay(id,season,episode)
+if kindOf == "search":
+	searchTerm = search()
+	
